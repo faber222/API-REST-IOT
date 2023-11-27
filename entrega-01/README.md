@@ -45,6 +45,7 @@ Exemplo Servidor e Cliente
 ## Escolhendo o componente a ser usado pelo cliente consumidor
 O cliente implementa um código e java que se conecta ao servidor, tal código usa comunicação padrão de zeroMQ, o código em java proverá uma interface para o usuário:
 sendo ela contida por exemplo:
+
 ![imagem](assets/menu.png)
 
 Sendo assim, para cada escolha do cliente, ele enviará uma determinada solicitação para o servidor, exemplo, cliente seleciona a opção 1, que refere-se a coleta de dados - GET -, e vai listar os produtos que ele tem disponivel, e vai escolher o dispositivo, e quando selecionar um dispositivo, enviará ao servidor a escolha, e o servidor irá fazer o consumo da api do dispositivo escolhido, e retornará ao cliente a informação desejada.
