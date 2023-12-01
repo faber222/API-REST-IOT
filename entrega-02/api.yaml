@@ -1,0 +1,246 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /iot:
+    get:
+      tags:
+      - iot-controller
+      operationId: obterTodosIot
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/prodIOT'
+    put:
+      tags:
+      - iot-controller
+      operationId: atualizarProdIOT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/prodIOT'
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/prodIOT'
+    post:
+      tags:
+      - iot-controller
+      operationId: adicionarIot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/prodIOT'
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/prodIOT'
+  /iot/grupo/{grupoId}:
+    get:
+      tags:
+      - iot-controller
+      operationId: obterTodosIotNoGrupo
+      parameters:
+      - name: grupoId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/prodIOT'
+    put:
+      tags:
+      - iot-controller
+      operationId: atualizarTodosIotsDoGrupo
+      parameters:
+      - name: grupoId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/prodIOT'
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/prodIOT'
+  /iot/desassociar/{iotId}:
+    put:
+      tags:
+      - iot-controller
+      operationId: desassociarIotDoGrupo
+      parameters:
+      - name: iotId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+  /iot/associar/{iotId}/{grupoId}:
+    put:
+      tags:
+      - iot-controller
+      operationId: associarIotAoGrupo
+      parameters:
+      - name: iotId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: grupoId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+  /iot/{id}:
+    get:
+      tags:
+      - iot-controller
+      operationId: obterIot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/prodIOT'
+    delete:
+      tags:
+      - iot-controller
+      operationId: excluirIot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "204":
+          description: No Content
+components:
+  schemas:
+    prodIOT:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+        status:
+          type: string
+        grupo:
+          type: boolean
+        grupoId:
+          type: integer
+          format: int64
+        dadosAtual:
+          type: integer
+          format: int32
