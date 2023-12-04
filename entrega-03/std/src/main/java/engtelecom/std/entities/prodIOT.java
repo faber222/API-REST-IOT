@@ -11,7 +11,6 @@ public class prodIOT {
     private long id;
     private String nome;
     private String status;
-    private boolean grupo;
-    private Long grupoId;
     private int dadosAtual;
+    private Long grupoId;
 }

@@ -2,7 +2,6 @@
     "id": 1,
     "nome": "iot",
     "status": "desligado",
-    "grupo": false,
     "grupoId": null,
     "dadosAtual": 0
 }

@@ -60,7 +60,6 @@ public class IotService {
         prodIOT iot = buscarPorId(iotId);
         if (iot != null) {
             iot.setGrupoId(grupoId);
-            iot.setGrupo(true);
             return true;
         }
         return false;
@@ -71,7 +70,6 @@ public class IotService {
         prodIOT iot = buscarPorId(iotId);
         if (iot != null) {
             iot.setGrupoId(null);
-            iot.setGrupo(false);
             return true;
         }
         return false;
@@ -104,19 +102,38 @@ public class IotService {
     }
 
     // atualiza um determinado iot
-    public prodIOT atualizar(prodIOT iot) {
-        prodIOT p = buscarPorId(iot.getId());
+    public prodIOT atualizarDados(prodIOT iot, Long iotId) {
+        prodIOT p = buscarPorId(iotId);
         if (p != null) {
-            p.setNome(iot.getNome());
+            p.setDadosAtual(iot.getDadosAtual());
+        }
+        return p;
+    }
+
+    // atualiza um determinado iot
+    public prodIOT atualizarStatus(prodIOT iot, Long iotId) {
+        prodIOT p = buscarPorId(iotId);
+        if (p != null) {
+            p.setStatus(iot.getStatus());
         }
         return p;
     }
 
     // atualiza status de um determinado iot
-    public List<prodIOT> atualizarStatus(prodIOT iot, Long grupoId) {
+    public List<prodIOT> atualizarStatusGrupo(prodIOT iot, Long grupoId) {
         List<prodIOT> p = new ArrayList<>();
         for (prodIOT iotDoGrupo : buscarPorGrupo(grupoId)) {
             iotDoGrupo.setStatus(iot.getStatus());
+            p.add(iotDoGrupo);
+        }
+        return p;
+    }
+
+    // atualiza dados de um determinado iot
+    public List<prodIOT> atualizarDadosGrupo(prodIOT iot, Long grupoId) {
+        List<prodIOT> p = new ArrayList<>();
+        for (prodIOT iotDoGrupo : buscarPorGrupo(grupoId)) {
+            iotDoGrupo.setDadosAtual(iot.getDadosAtual());
             p.add(iotDoGrupo);
         }
         return p;

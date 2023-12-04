@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import engtelecom.std.entities.prodIOT;
 import engtelecom.std.exceptions.GrupoNaoEncontradoException;
+import engtelecom.std.exceptions.IotDeletadoException;
 import engtelecom.std.exceptions.IotNaoEncontradoException;
+import engtelecom.std.exceptions.MetodoNaoPermitidoException;
 import engtelecom.std.service.IotService;
 
 @RestController
@@ -69,37 +71,61 @@ public class IotController {
     // associa iot existente no grupo
     @PutMapping("/associar/{iotId}/{grupoId}")
     @ResponseStatus(HttpStatus.OK)
-    public void associarIotAoGrupo(@PathVariable Long iotId, @PathVariable Long grupoId) {
-        if (!this.iotService.associarIotAoGrupo(iotId, grupoId)) {
-            throw new GrupoNaoEncontradoException(grupoId);
+    public prodIOT associarIotAoGrupo(@PathVariable Long iotId, @PathVariable Long grupoId) {
+        if (this.iotService.associarIotAoGrupo(iotId, grupoId)) {
+            return this.iotService.buscarPorId(iotId);
         }
+        throw new GrupoNaoEncontradoException(grupoId);
     }
 
     // dessassocia iot do grupo
     @PutMapping("/desassociar/{iotId}")
     @ResponseStatus(HttpStatus.OK)
-    public void desassociarIotDoGrupo(@PathVariable Long iotId) {
-        if (!this.iotService.desassociarIotDoGrupo(iotId)) {
-            throw new IotNaoEncontradoException(iotId);
+    public prodIOT desassociarIotDoGrupo(@PathVariable Long iotId) {
+        if (this.iotService.desassociarIotDoGrupo(iotId)) {
+            return this.iotService.buscarPorId(iotId);
         }
+        throw new IotNaoEncontradoException(iotId);
     }
 
     // atualiza dados de um iot
-    @PutMapping
+    @PutMapping("/dados/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public prodIOT atualizarProdIOT(@RequestBody prodIOT iot) {
-        prodIOT p = this.iotService.atualizar(iot);
+    public prodIOT atualizarDadosProdIOT(@RequestBody prodIOT iot, @PathVariable Long iotId) {
+        prodIOT p = this.iotService.atualizarDados(iot, iotId);
         if (p != null) {
             return p;
         }
-        throw new IotNaoEncontradoException(p.getId());
+        throw new IotNaoEncontradoException(iotId);
+    }
+
+    // atualiza dados de um iot
+    @PutMapping("/status/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public prodIOT atualizarStatusProdIOT(@RequestBody prodIOT iot, @PathVariable Long iotId) {
+        prodIOT p = this.iotService.atualizarStatus(iot, iotId);
+        if (p != null) {
+            return p;
+        }
+        throw new IotNaoEncontradoException(iotId);
     }
 
     // atualizar status de todos iot de um grupo
-    @PutMapping("/grupo/{grupoId}")
+    @PutMapping("/grupo/status/{grupoId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<prodIOT> atualizarTodosIotsDoGrupo(@RequestBody prodIOT iot, @PathVariable Long grupoId) {
-        List<prodIOT> p = this.iotService.atualizarStatus(iot, grupoId);
+    public List<prodIOT> atualizarStatusDeTodosIotsDoGrupo(@RequestBody prodIOT iot, @PathVariable Long grupoId) {
+        List<prodIOT> p = this.iotService.atualizarStatusGrupo(iot, grupoId);
+        if (p != null) {
+            return p;
+        }
+        throw new GrupoNaoEncontradoException(grupoId);
+    }
+
+    // atualizar status de todos iot de um grupo
+    @PutMapping("/grupo/dados/{grupoId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<prodIOT> atualizarDadosDeTodosIotsDoGrupo(@RequestBody prodIOT iot, @PathVariable Long grupoId) {
+        List<prodIOT> p = this.iotService.atualizarDadosGrupo(iot, grupoId);
         if (p != null) {
             return p;
         }
@@ -110,8 +136,30 @@ public class IotController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluirIot(@PathVariable long id) {
-        if (!this.iotService.excluir(id)) {
+        if (this.iotService.excluir(id)) {
+            throw new IotDeletadoException(id);
+        } else {
             throw new IotNaoEncontradoException(id);
+        }
+    }
+
+    @ControllerAdvice
+    class MetodoNaoPermitido {
+        @ResponseBody
+        @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+        @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+        String manipularMetodoNaoPermitido(MetodoNaoPermitidoException p) {
+            return p.getMessage();
+        }
+    }
+
+    @ControllerAdvice
+    class IotDeletado {
+        @ResponseBody
+        @ExceptionHandler(IotDeletadoException.class)
+        @ResponseStatus(HttpStatus.NOT_FOUND)
+        String IotDeletado(IotDeletadoException p) {
+            return p.getMessage();
         }
     }
 
