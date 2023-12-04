@@ -121,7 +121,7 @@ public class IotController {
         throw new GrupoNaoEncontradoException(grupoId);
     }
 
-    // atualizar status de todos iot de um grupo
+    // atualizar dados de todos iot de um grupo
     @PutMapping("/grupo/dados/{grupoId}")
     @ResponseStatus(HttpStatus.OK)
     public List<prodIOT> atualizarDadosDeTodosIotsDoGrupo(@RequestBody prodIOT iot, @PathVariable Long grupoId) {
