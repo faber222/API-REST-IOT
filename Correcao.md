@@ -16,3 +16,8 @@
 - Faltou colocar a descrição detalhada de cada recurso (documentação)
 - Faça as correções para a entrega final do projeto
 
+
+## Entrega 03
+
+- OK. 
+- Lembre-se que o diretório `entrega 04` deverá conter a solução completa, com Docker, código fonte Java, etc.
