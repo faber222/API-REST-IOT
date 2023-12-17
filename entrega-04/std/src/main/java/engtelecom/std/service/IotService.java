@@ -6,94 +6,55 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Component;
 
-import engtelecom.std.entities.prodIOT;
+import engtelecom.std.entities.GroupIOT;
+import engtelecom.std.entities.ProdIOT;
 
-/**
- * PessoaService é uma classe que simula um banco de dados.
- *
- * A anotação @Component indica que a classe PessoaService é um componente do
- * Spring. Isso significa que o Spring irá gerenciar as instâncias dessa classe
- * e irá injetá-las onde for necessário.
- *
- * Classes anotadas com @Component são chamadas de beans. E são singleton por
- * padrão, ou seja, o Spring irá criar apenas uma instância dessa classe e irá
- * compartilhá-la entre todos os componentes que a utilizarem.
- *
- * https://java-design-patterns.com/patterns/singleton/
- *
- */
 @Component
 public class IotService {
     // criando uma lista para simular um banco de dados em memória
-    private List<prodIOT> prodIOTs;
+    private List<ProdIOT> prodIOTs;
+    private List<GroupIOT> GroupIOTs;
     // criando um contador para gerar ids. O contador é estático para que seja
     // compartilhado entre todas as instâncias da classe PessoaService
     // O contador é do tipo AtomicLong para que as operações de incremento e
     // decremento sejam atômicas
-    private AtomicLong contador;
+    private AtomicLong contadorGrupo;
+    private AtomicLong contadorIot;
 
     // incrementa id do dispositivo
     public IotService() {
         this.prodIOTs = new ArrayList<>();
-        this.contador = new AtomicLong();
+        this.GroupIOTs = new ArrayList<>();
+        this.contadorIot = new AtomicLong();
+        this.contadorGrupo = new AtomicLong();
+    }
 
+    public GroupIOT criarGrupo(GroupIOT groupIOTs) {
+        groupIOTs.setGrupoId(this.contadorGrupo.incrementAndGet());
+        this.GroupIOTs.add(groupIOTs);
+        return groupIOTs;
     }
 
     // cadastra dispositivo sem grupo
-    public prodIOT cadastrar(prodIOT iot) {
-        iot.setId(this.contador.incrementAndGet());
-        iot.setGrupoId(null);
+    public ProdIOT cadastrarIot(ProdIOT iot) {
+        iot.setId(this.contadorIot.incrementAndGet());
         this.prodIOTs.add(iot);
         return iot;
     }
 
-    // cadastra dispositivo com grupo
-    public prodIOT cadastrar(prodIOT iot, Long grupoId) {
-        iot.setId(this.contador.incrementAndGet());
-        iot.setGrupoId(grupoId);
-        this.prodIOTs.add(iot);
-        return iot;
+    // busca todos os grupos
+    public List<GroupIOT> getGroupIOTs() {
+        return this.GroupIOTs;
     }
 
-    // associa iot existente a um grupo
-    public boolean associarIotAoGrupo(Long iotId, Long grupoId) {
-        prodIOT iot = buscarPorId(iotId);
-        if (iot != null) {
-            iot.setGrupoId(grupoId);
-            return true;
-        }
-        return false;
-    }
-
-    // desassocia iot existente de um grupo
-    public boolean desassociarIotDoGrupo(Long iotId) {
-        prodIOT iot = buscarPorId(iotId);
-        if (iot != null) {
-            iot.setGrupoId(null);
-            return true;
-        }
-        return false;
-    }
-
-    // busca todos iots sem grupo
-    public List<prodIOT> buscarTodos() {
+    // busca todos iots
+    public List<ProdIOT> getProdIOTs() {
         return this.prodIOTs;
     }
 
-    // busca todos iots de um grupo
-    public List<prodIOT> buscarPorGrupo(Long groupId) {
-        List<prodIOT> group = new ArrayList<>();
-        for (prodIOT iot : this.prodIOTs) {
-            if (iot.getGrupoId() == groupId) {
-                group.add(iot);
-            }
-        }
-        return group;
-    }
-
     // busca iot por id
-    public prodIOT buscarPorId(Long id) {
-        for (prodIOT p : this.prodIOTs) {
+    public ProdIOT buscarIotPorId(Long id) {
+        for (ProdIOT p : this.prodIOTs) {
             if (p.getId() == id) {
                 return p;
             }
@@ -101,47 +62,61 @@ public class IotService {
         return null;
     }
 
-    // atualiza um determinado iot
-    public prodIOT atualizarDados(prodIOT iot, Long iotId) {
-        prodIOT p = buscarPorId(iotId);
-        if (p != null) {
-            p.setDadosAtual(iot.getDadosAtual());
+    // busca iot por id
+    public GroupIOT buscarGrupoPorId(Long long1) {
+        for (GroupIOT p : this.GroupIOTs) {
+            if (p.getGrupoId() == long1) {
+                return p;
+            }
         }
-        return p;
+        return null;
+    }
+
+    public int buscarPosicaoIot(ProdIOT iot) {
+        int x = 0;
+        for (ProdIOT p : this.prodIOTs) {
+            if (p.getId() == iot.getId()) {
+                return x;
+            }
+            x++;
+        }
+        return -1;
+    }
+
+    public int buscarPosicaoGrupo(GroupIOT g) {
+        int x = 0;
+        for (GroupIOT p : this.GroupIOTs) {
+            if (p.getGrupoId() == g.getGrupoId()) {
+                return x;
+            }
+            x++;
+        }
+        return -1;
     }
 
     // atualiza um determinado iot
-    public prodIOT atualizarStatus(prodIOT iot, Long iotId) {
-        prodIOT p = buscarPorId(iotId);
+    public ProdIOT atualizarStatusIot(ProdIOT iot) {
+        ProdIOT p = buscarIotPorId(iot.getId());
         if (p != null) {
-            p.setStatus(iot.getStatus());
+            this.prodIOTs.set(buscarPosicaoIot(iot), iot);
+            p = iot;
         }
         return p;
     }
 
     // atualiza status de um determinado iot
-    public List<prodIOT> atualizarStatusGrupo(prodIOT iot, Long grupoId) {
-        List<prodIOT> p = new ArrayList<>();
-        for (prodIOT iotDoGrupo : buscarPorGrupo(grupoId)) {
-            iotDoGrupo.setStatus(iot.getStatus());
-            p.add(iotDoGrupo);
+    public GroupIOT atualizarStatusGrupo(GroupIOT g) {
+        GroupIOT group = buscarGrupoPorId(g.getGrupoId());
+        if (group != null) {
+            this.GroupIOTs.set(buscarPosicaoGrupo(g), g);
+            group = g;
         }
-        return p;
-    }
-
-    // atualiza dados de um determinado iot
-    public List<prodIOT> atualizarDadosGrupo(prodIOT iot, Long grupoId) {
-        List<prodIOT> p = new ArrayList<>();
-        for (prodIOT iotDoGrupo : buscarPorGrupo(grupoId)) {
-            iotDoGrupo.setDadosAtual(iot.getDadosAtual());
-            p.add(iotDoGrupo);
-        }
-        return p;
+        return group;
     }
 
     // exclui um determinado iot
-    public boolean excluir(Long id) {
-        prodIOT p = buscarPorId(id);
+    public boolean excluirIot(Long id) {
+        ProdIOT p = buscarIotPorId(id);
         if (p != null) {
             this.prodIOTs.remove(p);
             return true;
@@ -149,13 +124,13 @@ public class IotService {
         return false;
     }
 
-    public boolean coletarIot() {
-        // aguarda conexão dos IOT
-        // armazena os dados de cada iot conectado
-        // em this.cadastrarIOT(ajbabaiji);
-        // return true;
-
-        // se não conectar
+    // exclui um determinado grupo
+    public boolean excluirGrupo(long groupId) {
+        GroupIOT g = buscarGrupoPorId(groupId);
+        if (g != null) {
+            this.GroupIOTs.remove(g);
+            return true;
+        }
         return false;
     }
 }

@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import engtelecom.std.entities.prodIOT;
+import engtelecom.std.entities.GroupIOT;
+import engtelecom.std.entities.ProdIOT;
 import engtelecom.std.exceptions.GrupoNaoEncontradoException;
 import engtelecom.std.exceptions.IotDeletadoException;
 import engtelecom.std.exceptions.IotNaoEncontradoException;
@@ -25,121 +26,102 @@ import engtelecom.std.exceptions.MetodoNaoPermitidoException;
 import engtelecom.std.service.IotService;
 
 @RestController
-@RequestMapping("/iot")
 public class IotController {
+
     @Autowired
     private IotService iotService;
 
-    // retorna todos os iots sem grupo
+    // retorna todos os iots
     @GetMapping
+    @RequestMapping("/iot")
     @ResponseStatus(HttpStatus.OK)
-    public List<prodIOT> obterTodosIot() {
-        return this.iotService.buscarTodos();
+    public List<ProdIOT> obterTodosIot() {
+        return this.iotService.getProdIOTs();
     }
 
-    // retorna determinado iot sem grupo
-    @GetMapping("/{id}")
+    // atualiza um iot
+    @PutMapping("/iot")
     @ResponseStatus(HttpStatus.OK)
-    public prodIOT obterIot(@PathVariable long id) {
-        prodIOT p = this.iotService.buscarPorId(id);
+    public ProdIOT atualizarStatusProdIOT(@RequestBody ProdIOT iot) {
+        ProdIOT p = this.iotService.atualizarStatusIot(iot);
+        if (p != null) {
+            return p;
+        }
+        throw new IotNaoEncontradoException(iot.getId());
+    }
+
+    // cria um iot
+    @PostMapping("/iot")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProdIOT adicionarIot(@RequestBody ProdIOT p) {
+        return this.iotService.cadastrarIot(p);
+    }
+
+    // retorna determinado iot
+    @GetMapping("/iot/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProdIOT obterIot(@PathVariable long id) {
+        ProdIOT p = this.iotService.buscarIotPorId(id);
         if (p != null) {
             return p;
         }
         throw new IotNaoEncontradoException(id);
     }
 
-    // retorna todos iots de um grupo
-    @GetMapping("/grupo/{grupoId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<prodIOT> obterTodosIotNoGrupo(@PathVariable Long grupoId) {
-        List<prodIOT> group = this.iotService.buscarPorGrupo(grupoId);
-        for (prodIOT iot : group) {
-            if (iot == null) {
-                throw new IotNaoEncontradoException(grupoId);
-            }
-        }
-        return group;
-    }
-
-    // adiciona iot sem grupo
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public prodIOT adicionarIot(@RequestBody prodIOT p) {
-        return this.iotService.cadastrar(p);
-    }
-
-    // associa iot existente no grupo
-    @PutMapping("/associar/{iotId}/{grupoId}")
-    @ResponseStatus(HttpStatus.OK)
-    public prodIOT associarIotAoGrupo(@PathVariable Long iotId, @PathVariable Long grupoId) {
-        if (this.iotService.associarIotAoGrupo(iotId, grupoId)) {
-            return this.iotService.buscarPorId(iotId);
-        }
-        throw new GrupoNaoEncontradoException(grupoId);
-    }
-
-    // dessassocia iot do grupo
-    @PutMapping("/desassociar/{iotId}")
-    @ResponseStatus(HttpStatus.OK)
-    public prodIOT desassociarIotDoGrupo(@PathVariable Long iotId) {
-        if (this.iotService.desassociarIotDoGrupo(iotId)) {
-            return this.iotService.buscarPorId(iotId);
-        }
-        throw new IotNaoEncontradoException(iotId);
-    }
-
-    // atualiza dados de um iot
-    @PutMapping("/dados/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public prodIOT atualizarDadosProdIOT(@RequestBody prodIOT iot, @PathVariable Long iotId) {
-        prodIOT p = this.iotService.atualizarDados(iot, iotId);
-        if (p != null) {
-            return p;
-        }
-        throw new IotNaoEncontradoException(iotId);
-    }
-
-    // atualiza dados de um iot
-    @PutMapping("/status/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public prodIOT atualizarStatusProdIOT(@RequestBody prodIOT iot, @PathVariable Long iotId) {
-        prodIOT p = this.iotService.atualizarStatus(iot, iotId);
-        if (p != null) {
-            return p;
-        }
-        throw new IotNaoEncontradoException(iotId);
-    }
-
-    // atualizar status de todos iot de um grupo
-    @PutMapping("/grupo/status/{grupoId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<prodIOT> atualizarStatusDeTodosIotsDoGrupo(@RequestBody prodIOT iot, @PathVariable Long grupoId) {
-        List<prodIOT> p = this.iotService.atualizarStatusGrupo(iot, grupoId);
-        if (p != null) {
-            return p;
-        }
-        throw new GrupoNaoEncontradoException(grupoId);
-    }
-
-    // atualizar dados de todos iot de um grupo
-    @PutMapping("/grupo/dados/{grupoId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<prodIOT> atualizarDadosDeTodosIotsDoGrupo(@RequestBody prodIOT iot, @PathVariable Long grupoId) {
-        List<prodIOT> p = this.iotService.atualizarDadosGrupo(iot, grupoId);
-        if (p != null) {
-            return p;
-        }
-        throw new GrupoNaoEncontradoException(grupoId);
-    }
-
     // deleta um iot
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/iot/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluirIot(@PathVariable long id) {
-        if (this.iotService.excluir(id)) {
+        if (this.iotService.excluirIot(id)) {
             throw new IotDeletadoException(id);
         } else {
             throw new IotNaoEncontradoException(id);
+        }
+    }
+
+    // retorna todos os grupos
+    @GetMapping("/grupo")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GroupIOT> obterTodosGrupos() {
+        return this.iotService.getGroupIOTs();
+    }
+
+    // cria um grupo no grupo
+    @PostMapping("/grupo")
+    @ResponseStatus(HttpStatus.OK)
+    public GroupIOT criarGrupo(@RequestBody GroupIOT g) {
+        return this.iotService.criarGrupo(g);
+    }
+
+    // retorna todos iots de um grupo
+    @GetMapping("/grupo/{grupoId}")
+    @ResponseStatus(HttpStatus.OK)
+    public GroupIOT obterGrupo(@PathVariable long grupoId) {
+        GroupIOT group = this.iotService.buscarGrupoPorId(grupoId);
+        if (group != null) {
+            return group;
+        }
+        throw new GrupoNaoEncontradoException(grupoId);
+    }
+
+    // atualizar status de todos iot de um grupo
+    @PutMapping("/grupo/{grupoId}")
+    @ResponseStatus(HttpStatus.OK)
+    public GroupIOT atualizarStatusDoGrupo(@RequestBody GroupIOT g) {
+        GroupIOT group = this.iotService.atualizarStatusGrupo(g);
+        if (group != null) {
+            return group;
+        }
+        throw new GrupoNaoEncontradoException(g.getGrupoId());
+    }
+
+    @DeleteMapping("/grupo/{grupoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluirGrupo(@PathVariable int grupoId) {
+        if (this.iotService.excluirGrupo(grupoId)) {
+            throw new IotDeletadoException(grupoId);
+        } else {
+            throw new IotNaoEncontradoException(grupoId);
         }
     }
 

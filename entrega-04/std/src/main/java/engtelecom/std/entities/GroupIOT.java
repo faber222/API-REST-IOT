@@ -1,5 +1,7 @@
 package engtelecom.std.entities;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class prodIOT {
-    private long id;
-    private String nome;
-    private String status;
-    private int dadosAtual;
+public class GroupIOT {
     private Long grupoId;
+    private String nome;
+    private List<ProdIOT> produtos;
 }
