@@ -21,7 +21,7 @@ services:
     image: servidor
     hostname: api-server
     ports:
-      - "9000:9000"
+      - "9090:9090"
     networks:
       - iot_network
     depends_on:

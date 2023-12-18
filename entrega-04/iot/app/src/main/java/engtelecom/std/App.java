@@ -11,8 +11,8 @@ import java.util.concurrent.TimeoutException;
 public class App {
     public static void main(String[] args) throws IOException, InterruptedException, TimeoutException {
         // lê o primeiro argumento como inteiro
-        // int arg = Integer.parseInt(args[0]);
-        int arg = 1;
+        int arg = Integer.parseInt(args[0]);
+        // int arg = 1;
 
         // verifica se é algum número entre 1 a 5
         switch (arg) {

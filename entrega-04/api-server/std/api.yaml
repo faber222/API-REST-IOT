@@ -44,6 +44,12 @@ paths:
       summary: Atualiza um IOT existente
       description: É possivel alterar os dados de um iot existente na api
       operationId: atualizarStatusProdIOT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/prodIOT'
+        required: true
       responses:
         "404":
           description: Not Found
