@@ -343,9 +343,10 @@ components:
         dadosAtual:
           type: integer
           format: int32
-        grupoId:
-          type: integer
-          format: int64
+        metodos:
+          type: array
+          items: 
+            type: string
     GroupIOT:
       type: object
       properties:

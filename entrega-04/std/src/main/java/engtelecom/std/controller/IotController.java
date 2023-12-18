@@ -2,6 +2,8 @@ package engtelecom.std.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,15 +29,23 @@ import engtelecom.std.service.IotService;
 
 @RestController
 public class IotController {
+    private static final Logger logger = LoggerFactory.getLogger(IotService.class);
 
     @Autowired
     private IotService iotService;
+
+    // @PostMapping("/processar-mensagem")
+    // @ResponseStatus(HttpStatus.CREATED)
+    // public void processarMensagem(@RequestBody String mensagem) {
+    //     iotService.registraNovoIot(mensagem);
+    // }
 
     // retorna todos os iots
     @GetMapping
     @RequestMapping("/iot")
     @ResponseStatus(HttpStatus.OK)
     public List<ProdIOT> obterTodosIot() {
+        logger.info("Obtendo todos os IOTs do controlador.");
         return this.iotService.getProdIOTs();
     }
 

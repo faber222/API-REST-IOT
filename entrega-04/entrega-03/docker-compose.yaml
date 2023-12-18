@@ -26,7 +26,7 @@ services:
 
   tv:
     build:
-      context: ./iot
+      context: ./iot/tv
     image: iot-tv
     hostname: iot-tv
     networks:
@@ -34,7 +34,7 @@ services:
 
   som:
     build:
-      context: ./iot
+      context: ./iot/som
     image: iot-som
     hostname: iot-som
     networks:
@@ -42,7 +42,7 @@ services:
 
   cortina:
     build:
-      context: ./iot
+      context: ./iot/cortina
     image: iot-cortina
     hostname: iot-cortina
     networks:
@@ -50,7 +50,7 @@ services:
 
   lampada:
     build:
-      context: ./iot
+      context: ./iot/lampada
     image: iot-lampada
     hostname: iot-lampada
     networks:
@@ -58,7 +58,7 @@ services:
   
   ar:
     build:
-      context: ./iot
+      context: ./iot/ar
     image: iot-ar
     hostname: iot-ar
     networks:

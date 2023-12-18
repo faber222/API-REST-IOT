@@ -2,8 +2,11 @@ package engtelecom.std.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import engtelecom.std.entities.GroupIOT;
@@ -20,14 +23,32 @@ public class IotService {
     // decremento sejam atômicas
     private AtomicLong contadorGrupo;
     private AtomicLong contadorIot;
+    private static final Logger logger = LoggerFactory.getLogger(IotService.class);
 
     // incrementa id do dispositivo
     public IotService() {
-        this.prodIOTs = new ArrayList<>();
+        this.prodIOTs = new CopyOnWriteArrayList<>();
         this.GroupIOTs = new ArrayList<>();
         this.contadorIot = new AtomicLong();
         this.contadorGrupo = new AtomicLong();
     }
+
+    // public synchronized void registraNovoIot(String jsonMensagem) {
+    //     System.out.println("payload:" + jsonMensagem);
+    //     logger.info("Recebendo mensagem: {}", jsonMensagem);
+    //     // Criar um ObjectMapper (Jackson)
+    //     ObjectMapper objectMapper = new ObjectMapper();
+    //     ProdIOT novoIot = null;
+    //     try {
+    //         novoIot = objectMapper.readValue(jsonMensagem, ProdIOT.class);
+    //         if (novoIot != null) {
+    //             System.out.println("teste de salvamento:" + cadastrarIot(novoIot));
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     logger.info("Registro concluído.");
+    // }
 
     public GroupIOT criarGrupo(GroupIOT groupIOTs) {
         groupIOTs.setGrupoId(this.contadorGrupo.incrementAndGet());
@@ -49,6 +70,7 @@ public class IotService {
 
     // busca todos iots
     public List<ProdIOT> getProdIOTs() {
+        logger.info("Obtendo todos os IOTs. Total: {}", prodIOTs.size());
         return this.prodIOTs;
     }
 

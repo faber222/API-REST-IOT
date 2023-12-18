@@ -7,7 +7,7 @@ info:
     permitindo a criação, atualização e exclusão de recursos.
   version: v0
 servers:
-- url: http://localhost:8080
+- url: http://api-server:8080
   description: IOT-Controller-STD
 paths:
   /iot:
@@ -195,7 +195,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/prodIOT'
+                  $ref: '#/components/schemas/GroupIOT'
     post:
       tags:
       - iot-controller
@@ -203,6 +203,12 @@ paths:
       description: Cria um grupo de associação
       operationId: criaGrupo
       parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupIOT'
+        required: true
       responses:
         "404":
           description: Not Found
@@ -221,7 +227,41 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/prodIOT'
+                $ref: '#/components/schemas/GroupIOT'
+    put:
+      tags:
+      - iot-controller
+      summary: Atualiza dados do grupo 
+      description: Pode atualizar o grupo e adicionar produtos
+      operationId: atualizarStatusDeTodosIotsDoGrupo
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupIOT'
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "405":
+          description: Method Not Allowed
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupIOT'
   /grupo/{grupoId}:
     get:
       tags:
@@ -257,48 +297,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/prodIOT'
-    put:
-      tags:
-      - iot-controller
-      summary: Atualiza dados do grupo 
-      description: Pode atualizar o grupo e adicionar produtos
-      operationId: atualizarStatusDeTodosIotsDoGrupo
-      parameters:
-      - name: grupoId
-        in: path
-        description: id do grupo
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/prodIOT'
-        required: true
-      responses:
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: string
-        "405":
-          description: Method Not Allowed
-          content:
-            '*/*':
-              schema:
-                type: string
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/prodIOT'
+                  $ref: '#/components/schemas/GroupIOT'
+
     delete:
       tags:
       - iot-controller
@@ -346,3 +346,15 @@ components:
         grupoId:
           type: integer
           format: int64
+    GroupIOT:
+      type: object
+      properties:
+        grupoId:
+          type: integer
+          format: int64
+        nome:
+          type: string
+        produtos:
+          type: array
+          items:
+            $ref: '#/components/schemas/prodIOT'
