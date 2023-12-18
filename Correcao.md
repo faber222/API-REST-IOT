@@ -21,3 +21,18 @@
 
 - OK. 
 - Lembre-se que o diretório `entrega 04` deverá conter a solução completa, com Docker, código fonte Java, etc.
+
+## Entrega 04
+
+- Documentação insuficiente para executar testes na aplicação, conforme solicitado na descrição do projeto
+- Não era necessário explicar como executar docker, mas sim como subir sua aplicação, etc.
+- Consegui subir individualmente cada contêiner e foi possível ver a interação entre eles, contudo ao interagir com a API para, por exemplo, abrir uma cortina, não foi possível ver a mensagem chegar na cortina (pelo menos não imprimiu no console da cortina)
+- Não deveria ter entregar um `jar` com a aplicação. Isso deveria ser gerado ao executar o contêiner
+
+## Conceito final
+
+- Entrega 1: 10
+- Entrega 2: 8
+- Entrega 3: 10
+- Entrega 4: 6
+- Nota final: 7,2
