@@ -1,0 +1,27 @@
+plugins {
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'java'
+	id 'org.springframework.boot' version '3.1.5'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+group = 'engtelecom'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0' 
+	implementation 'com.rabbitmq:amqp-client:5.18.0'
+}
+
+java {
+	sourceCompatibility = '17'
+}
+
+springBoot {
+    mainClass = 'engtelecom.std.App'
+}

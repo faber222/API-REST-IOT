@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"    # Porta padrão para conexões AMQP
+      - "15672:15672"  # Porta para o painel de controle da interface de gerenciamento
+      - "1883:1883"    # Porta para a troca de mensagens
+    environment:
+      RABBITMQ_DEFAULT_USER: "faber"
+      RABBITMQ_DEFAULT_PASS: "12345678"
+    hostname: rabbitmq
+    container_name: "rabbitmq-teste"
+    networks:
+      - iot_network
+  api-server:
+    build:
+      context: ./api-server
+      dockerfile: Dockerfile
+    image: servidor
+    hostname: api-server
+    ports:
+      - "9000:9000"
+    networks:
+      - iot_network
+    depends_on:
+      - rabbitmq 
+
+  tv:
+    build:
+      context: ./iot/tv
+    image: iot-tv
+    hostname: iot-tv
+    networks:
+      - iot_network
+    depends_on:
+      - rabbitmq
+       
+  som:
+    build:
+      context: ./iot/som
+    image: iot-som
+    hostname: iot-som
+    networks:
+      - iot_network
+    depends_on:
+      - rabbitmq 
+      
+  cortina:
+    build:
+      context: ./iot/cortina
+    image: iot-cortina
+    hostname: iot-cortina
+    networks:
+      - iot_network
+    depends_on:
+      - rabbitmq 
+      
+  lampada:
+    build:
+      context: ./iot/lampada
+    image: iot-lampada
+    hostname: iot-lampada
+    networks:
+      - iot_network
+    depends_on:
+      - rabbitmq 
+        
+  ar:
+    build:
+      context: ./iot/ar
+    image: iot-ar
+    hostname: iot-ar
+    networks:
+      - iot_network
+    depends_on:
+      - rabbitmq 
+      
+networks:
+  iot_network:
+    driver: bridge
