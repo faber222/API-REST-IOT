@@ -13,6 +13,6 @@ E conforme a nossa escolha, podemos ter um outro serviço com um cliente, ou usa
 
 # Entregas
 - [X] [entrega-01](./entrega-01/README.md)
-- [ ] [entrega-02](/README.md)
-- [ ] [entrega-03](/README.md)
-- [ ] [entrega-04](/README.md)
+- [X] [entrega-02](./entrega-02/api.yaml)
+- [X] [entrega-03](./entrega-03/README.md)
+- [X] [entrega-04](./entrega-04/README.md)
